@@ -2,7 +2,7 @@
      id="sectionsNav">
     <div class="container">
         <div class="navbar-translate">
-            <a class="navbar-brand" href="https://demos.creative-tim.com/material-kit/index.html"><?= debug($app_name); ?></a>
+            <a class="navbar-brand" href="<?= $app_root; ?>"><?= $app_name; ?></a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" aria-expanded="false"
                     aria-label="Toggle navigation">
                 <span class="sr-only">Toggle navigation</span>
@@ -13,31 +13,12 @@
         </div>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav ml-auto">
-                <li class="dropdown nav-item">
-                    <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-                        <i class="material-icons">apps</i> Components
-                    </a>
-                    <div class="dropdown-menu dropdown-with-icons">
-                        <a href="./index.html" class="dropdown-item">
-                            <i class="material-icons">layers</i> All Components
-                        </a>
-                        <a href="https://demos.creative-tim.com/material-kit/docs/2.0/getting-started/introduction.html"
-                           class="dropdown-item">
-                            <i class="material-icons">content_paste</i> Documentation
-                        </a>
-                    </div>
+                <li class="nav-item">
+                    <a href="<?= $app_root; ?>users/login" class="btn btn-raised btn-round"> <?= $text_login; ?> </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="javascript:void(0)" onclick="scrollToDownload()">
-                        <i class="material-icons">cloud_download</i> Download
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" rel="tooltip" title="" data-placement="bottom"
-                       href="https://www.facebook.com/CreativeTim" target="_blank"
-                       data-original-title="Like us on Facebook">
-                        <i class="fa fa-facebook-square"></i>
-                    </a>
+                    <a href="<?= $app_root; ?>users/registration"
+                       class="btn btn-rose btn-raised btn-round"> <?= $text_registration; ?> </a>
                 </li>
             </ul>
         </div>

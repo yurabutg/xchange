@@ -180,12 +180,11 @@ return [
     'EmailTransport' => [
         'default' => [
             'className' => 'Mail',
-            // The following keys are used in SMTP transports
-            'host' => 'db757285486.db.1and1.com',
-            'port' => 25,
+            'host' => 'smtp.yandex.ru',
+            'port' => 465,
             'timeout' => 30,
-            'username' => null,
-            'password' => null,
+            'username' => 'yurabutg',
+            'password' => 'ustdgiyvefmkeueh',
             'client' => null,
             'tls' => null,
             'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),

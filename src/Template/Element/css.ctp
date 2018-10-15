@@ -6,3 +6,4 @@
 
 <!--     CSS     -->
 <?= $this->Html->css('material-kit.css'.$css_version); ?>
+<?= $this->Html->css('custom.css'.$css_version); ?>
