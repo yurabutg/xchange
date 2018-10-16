@@ -10,21 +10,23 @@
     </title>
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no'
           name='viewport'/>
-        <!-- CSS Files -->
+    <!-- CSS Files -->
     <?= $this->Element('css'); ?>
 </head>
 
 <body class="profile-page sidebar-collapse">
 <?= $this->Element('nav_bar'); ?>
-<div class="page-header header-filter" data-parallax="true" style="background-image: url('../img/city-profile.jpg');"></div>
+<div class="page-header header-filter" data-parallax="true"
+     style="background-image: url('<?= $app_root; ?>img/city-profile.jpg');"></div>
 <div class="main main-raised">
     <div class="section main-section">
         <div class="container">
-            <?= $this->fetch('content')?>
+            <?= $this->fetch('content') ?>
         </div>
     </div>
 </div>
-<?= $this->Element('footer');?>
-<?= $this->Element('js');?>
+<?= $this->Element('modals'); ?>
+<?= $this->Element('footer'); ?>
+<?= $this->Element('js'); ?>
 </body>
 </html>

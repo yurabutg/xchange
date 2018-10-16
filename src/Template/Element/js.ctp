@@ -5,11 +5,13 @@
 <?= $this->Html->script('core/popper.min'); ?>
 <?= $this->Html->script('core/bootstrap-material-design.min'); ?>
 <?= $this->Html->script('plugins/moment.min'); ?>
-    <!--	Plugin for the Datepicker -->
+<!--	Plugin for the Datepicker -->
 <?= $this->Html->script('plugins/bootstrap-datetimepicker'); ?>
-    <!--  Plugin for the Sliders -->
+<!--  Plugin for the Sliders -->
 <?= $this->Html->script('plugins/nouislider.min'); ?>
-    <!--	Plugin for Sharrre btn -->
+<!--	Plugin for Sharrre btn -->
 <?= $this->Html->script('plugins/jquery.sharrre'); ?>
-    <!-- Control Center for Material Kit -->
+<!-- Control Center for Material Kit -->
 <?= $this->Html->script('material-kit'); ?>
+
+<?= ($current_controller === 'Users' && $current_action === 'confirmation') ? $this->Html->script('confirmation' . $js_version) : ''; ?>

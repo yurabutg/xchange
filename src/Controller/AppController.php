@@ -12,6 +12,7 @@
  * @since     0.2.9
  * @license   https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace App\Controller;
 
 use Cake\Controller\Controller;
@@ -45,12 +46,38 @@ class AppController extends Controller
 
         $this->loadComponent('RequestHandler');
         $this->loadComponent('Flash');
+        $this->loadComponent('Auth', [
+            'authorize' => 'Controller',
+            'loginAction' => ['controller' => 'Users', 'action' => 'login'],
+            'loginRedirect' => ['controller' => 'Homes', 'action' => 'index'],
+            'storage' => 'Session',
+            'passwordHasher' => 'DefaultPasswordHasher',
+            'authenticate' => [
+                'Form' => [
+                    'fields' => ['username' => 'email']
+                ]
+            ],
+        ]);
 
         $this->_setTableVariables();
         $this->_setVariables();
         $this->_setTextVariables();
+        $this->_setUserVariables();
     }
 
+    private function _setUserVariables()
+    {
+        $this->is_logged = false;
+        $this->current_user = [];
+
+        if ($this->Auth->user()) {
+            $this->is_logged = true;
+            $this->current_user = $this->users_table->getById($this->Auth->user()['id']);
+        }
+
+        $this->set('is_logged', $this->is_logged);
+        $this->set('current_user', $this->current_user);
+    }
 
     private function _setTableVariables()
     {
@@ -113,6 +140,8 @@ class AppController extends Controller
         $this->set('text_confirm', t('Conferma'));
         $this->set('text_login', t('Accedi'));
         $this->set('text_registration', t('Registrati'));
+        $this->set('text_home', t('HOME'));
+        $this->set('text_profile', t('Profilo'));
 
         /* days text */
         $this->text_week_mo = t('Lu');
@@ -204,8 +233,7 @@ class AppController extends Controller
         $token = '';
 
         if (!is_null($length)) {
-            while (strlen($token) <= $length)
-            {
+            while (strlen($token) <= $length) {
                 $randstring = '';
                 for ($i = 0; $i < $length; $i++) {
                     $randstring .= $characters[rand(0, strlen($characters) - 1)];
@@ -214,8 +242,7 @@ class AppController extends Controller
                 $token .= sha1(md5($randstring));
             }
 
-            if (strlen($token) > $length)
-            {
+            if (strlen($token) > $length) {
                 $token = substr($token, 0, $length);
             }
         }

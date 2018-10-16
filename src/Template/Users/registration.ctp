@@ -1,4 +1,17 @@
 <div class="row">
+    <div class="col-lg-12 col-md-12 ml-auto mr-auto">
+        <div class="alert alert-danger <?= (isset($show_user_exist_alert) && $show_user_exist_alert) ? '' : 'd-none' ?>">
+            <div class="container">
+                <div class="alert-icon">
+                    <i class="material-icons">error_outline</i>
+                </div>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true"><i class="material-icons">clear</i></span>
+                </button>
+                <?= $text_user_exist_alert; ?>
+            </div>
+        </div>
+    </div>
     <div class="col-lg-6 col-md-6 ml-auto mr-auto">
         <div class="card card-login">
             <form class="form" method="post" action="">
@@ -12,7 +25,8 @@
                       <i class="material-icons">face</i>
                     </span>
                         </div>
-                        <input type="text" name="first_name" class="form-control" placeholder="<?= $text_first_name; ?>" autocomplete="off" required>
+                        <input type="text" name="first_name" class="form-control" placeholder="<?= $text_first_name; ?>"
+                               autocomplete="off" required>
                     </div>
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -20,7 +34,8 @@
                       <i class="material-icons">face</i>
                     </span>
                         </div>
-                        <input type="text" name="last_name" class="form-control" placeholder="<?= $text_last_name; ?>"autocomplete="off" required>
+                        <input type="text" name="last_name" class="form-control" placeholder="<?= $text_last_name; ?>"
+                               autocomplete="off" required>
                     </div>
 
                     <div class="input-group">
@@ -29,7 +44,8 @@
                       <i class="material-icons">mail</i>
                     </span>
                         </div>
-                        <input type="email" name="email" class="form-control" placeholder="<?= $text_email; ?>" autocomplete="off" required>
+                        <input type="email" name="email" class="form-control" placeholder="<?= $text_email; ?>"
+                               autocomplete="off" required>
                     </div>
 
 
@@ -39,7 +55,26 @@
                       <i class="material-icons">lock_outline</i>
                     </span>
                         </div>
-                        <input type="password" name="password" class="form-control" placeholder="<?= $text_password; ?>" autocomplete="off" required>
+                        <input type="password" name="password" class="form-control" placeholder="<?= $text_password; ?>"
+                               autocomplete="off" required>
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                        <div class="form-group has-danger bmd-form-group">
+                            <label for="exampleInput2" class="bmd-label-floating">Success input</label>
+                            <input type="password" class="form-control" id="exampleInput2">
+                            <span class="form-control-feedback">
+                                <i class="material-icons">done</i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                        <div class="form-group has-success bmd-form-group">
+                            <label for="exampleInput3" class="bmd-label-floating">Success input</label>
+                            <input type="password" class="form-control" id="exampleInput3">
+                            <span class="form-control-feedback">
+                                <i class="material-icons">done</i>
+                            </span>
+                        </div>
                     </div>
                 </div>
                 <div class="footer text-center margin-top-20">
