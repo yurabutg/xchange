@@ -82,6 +82,7 @@ class AppController extends Controller
     private function _setTableVariables()
     {
         $this->users_table = TableRegistry::get('Users');
+        $this->currencys_table = TableRegistry::get('Currencys');
     }
 
     private function _setVariables()

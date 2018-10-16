@@ -58,24 +58,6 @@
                         <input type="password" name="password" class="form-control" placeholder="<?= $text_password; ?>"
                                autocomplete="off" required>
                     </div>
-                    <div class="col-lg-6 col-md-6">
-                        <div class="form-group has-danger bmd-form-group">
-                            <label for="exampleInput2" class="bmd-label-floating">Success input</label>
-                            <input type="password" class="form-control" id="exampleInput2">
-                            <span class="form-control-feedback">
-                                <i class="material-icons">done</i>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6">
-                        <div class="form-group has-success bmd-form-group">
-                            <label for="exampleInput3" class="bmd-label-floating">Success input</label>
-                            <input type="password" class="form-control" id="exampleInput3">
-                            <span class="form-control-feedback">
-                                <i class="material-icons">done</i>
-                            </span>
-                        </div>
-                    </div>
                 </div>
                 <div class="footer text-center margin-top-20">
                     <input type="submit" class="btn btn-primary btn-sm" value="<?= $text_registration; ?>">

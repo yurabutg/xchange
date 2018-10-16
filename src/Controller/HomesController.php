@@ -23,10 +23,22 @@ class HomesController extends AppController
         $this->Auth->allow([
             'index'
         ]);
+
+        $this->_setTextVariables();
     }
 
     public function index()
     {
-        /**/
+        $crypto_currencys = $this->currencys_table->getByCurrencyTypeName('crypto');
+        $fiat_currencys = $this->currencys_table->getByCurrencyTypeName('fiat');
+        $this->set('crypto_currencys', $crypto_currencys);
+        $this->set('fiat_currencys', $fiat_currencys);
+    }
+
+    private function _setTextVariables()
+    {
+        $this->set('text_how_exxchange', t('HomesController LINE: 39
+        
+        Spiegazioni spiegazioni spiegazioni spiegazioni spiegazioni spiegazioni spiegazioni spiegazioni '));
     }
 }
