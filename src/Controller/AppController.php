@@ -143,6 +143,7 @@ class AppController extends Controller
         $this->set('text_registration', t('Registrati'));
         $this->set('text_home', t('HOME'));
         $this->set('text_profile', t('Profilo'));
+        $this->set('text_security', t('Sicurezza'));
 
         /* days text */
         $this->text_week_mo = t('Lu');

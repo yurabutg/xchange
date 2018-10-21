@@ -2,7 +2,7 @@
 
 /* App settings */
 $config['app_root'] = '/';
-$config['app_name'] = 'X change';
+$config['app_name'] = 'Xchange';
 $config['https_domain'] = $_SERVER['REQUEST_SCHEME'].'://'. $_SERVER['HTTP_HOST'];
 $config['server_port'] = 'http://'.$_SERVER['HTTP_HOST'];
 $config['app_owner'] = 'xxxxxxx';

@@ -7,6 +7,7 @@ use Cake\Mailer\Email;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\Network\Exception\NotFoundException;
 use Cake\View\Exception\MissingTemplateException;
+use GoogleAuthenticator;
 
 /**
  * Static content controller
@@ -25,6 +26,58 @@ class UsersController extends AppController
             'confirmation',
             'registration'
         ]);
+    }
+
+    public function profile()
+    {
+        if ($this->is_logged) {
+            $user = $this->current_user;
+            $this->set('user', $user);
+            /* 2Fa*/
+            require_once(ROOT . DS . "vendor" . DS . "Google" . DS . "GoogleAuthenticator.php");
+            $ga = new GoogleAuthenticator();
+            try {
+                $secret = $ga->createSecret();
+                $qrCodeUrl = $ga->getQRCodeGoogleUrl($this->app_name, $secret);
+                $this->set('qrCodeUrl', $qrCodeUrl);
+                $this->set('secret', $secret);
+            } catch (\Exception $e) {
+            }
+            if ($this->request->is('post')) {
+                $data = $this->request->data;
+                if (isset($data['btn_enable_2fa'])){
+                    if (!is_null($data['twofa_secret']) && !is_null($data['twofa_confirm_key'])) {
+//                    $oneCode = $ga->getCode($data['twofa_secret']);
+                        $checkResult = $ga->verifyCode($data['twofa_secret'], $data['twofa_confirm_key']);
+                        if ($checkResult) {
+                            $entity = $this->users_table->get($user['id']);
+                            $entity->twofa_enabled = 1;
+                            $entity->twofa_secret = $data['twofa_secret'];
+                            $this->users_table->save($entity);
+                        } else {
+                            echo 'FAILED';
+                        }
+                    }
+                }
+                else if ($data['btn_disable_2fa']){
+
+                }
+            }
+//        echo "Secret is: ".$secret."\n\n";
+
+
+//            $oneCode = $ga->getCode($secret);
+//        echo "Checking Code '$oneCode' and Secret '$secret':\n";
+
+//            $checkResult = $ga->verifyCode($secret, $oneCode, 2);    // 2 = 2*30sec clock tolerance
+//            if ($checkResult) {
+//            echo 'OK';
+//            } else {
+//            echo 'FAILED';
+//            }
+        } else {
+            $this->redirect($this->app_root);
+        }
     }
 
     public function login()
@@ -197,5 +250,8 @@ class UsersController extends AppController
         $this->set('text_user_confirmation_no_user_title', t('Text per utente non trovato o gia confirmato (UsersController LINE: 146)'));
         $this->set('text_user_confirmation_need_confirm', t('text: Vai su email e clichi il link; Atenzione link valido 24 ore; se hai gia confirmato fai login <a href="' . $this->app_root . 'users/login"><b>QUI</b></a> (UsersController LINE: 147)'));
         $this->set('text_user_confirmation_need_confirm_title', t('text (UsersController LINE: 148)'));
+        $this->set('text_scan_qr', t('1) Scansiona QR codice'));
+        $this->set('text_confirm_qr', t('2) Inserisci codece di conferma'));
+        $this->set('text_2fa_code', t('Codece di conferma'));
     }
 }
