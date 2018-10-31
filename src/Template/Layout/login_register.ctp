@@ -14,19 +14,16 @@
     <?= $this->Element('css'); ?>
 </head>
 
-<body class="profile-page sidebar-collapse">
-<?= $this->Element('nav_bar'); ?>
+<body class="login-page sidebar-collapse">
+<?= $this->Element('nav_bar', ['class' => 'navbar navbar-inverse fixed-top navbar-expand-lg bg-dark']); ?>
 <div class="page-header header-filter" data-parallax="true"
-     style="background-image: url('<?= $app_root; ?>img/city-profile.jpg');"></div>
-<div class="main main-raised">
-    <div class="section main-section">
-        <div class="container">
-            <?= $this->fetch('content') ?>
-        </div>
+     style="background-image: url('<?= $app_root; ?>img/bg7.jpg');">
+    <div class="container">
+        <?= $this->fetch('content') ?>
     </div>
+    <?= $this->Element('modals'); ?>
+    <?= $this->Element('footer'); ?>
+    <?= $this->Element('js'); ?>
 </div>
-<?= $this->Element('modals'); ?>
-<?= $this->Element('footer'); ?>
-<?= $this->Element('js'); ?>
 </body>
 </html>

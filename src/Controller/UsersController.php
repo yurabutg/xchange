@@ -33,48 +33,6 @@ class UsersController extends AppController
         if ($this->is_logged) {
             $user = $this->current_user;
             $this->set('user', $user);
-            /* 2Fa*/
-            require_once(ROOT . DS . "vendor" . DS . "Google" . DS . "GoogleAuthenticator.php");
-            $ga = new GoogleAuthenticator();
-            try {
-                $secret = $ga->createSecret();
-                $qrCodeUrl = $ga->getQRCodeGoogleUrl($this->app_name, $secret);
-                $this->set('qrCodeUrl', $qrCodeUrl);
-                $this->set('secret', $secret);
-            } catch (\Exception $e) {
-            }
-            if ($this->request->is('post')) {
-                $data = $this->request->data;
-                if (isset($data['btn_enable_2fa'])){
-                    if (!is_null($data['twofa_secret']) && !is_null($data['twofa_confirm_key'])) {
-//                    $oneCode = $ga->getCode($data['twofa_secret']);
-                        $checkResult = $ga->verifyCode($data['twofa_secret'], $data['twofa_confirm_key']);
-                        if ($checkResult) {
-                            $entity = $this->users_table->get($user['id']);
-                            $entity->twofa_enabled = 1;
-                            $entity->twofa_secret = $data['twofa_secret'];
-                            $this->users_table->save($entity);
-                        } else {
-                            echo 'FAILED';
-                        }
-                    }
-                }
-                else if ($data['btn_disable_2fa']){
-
-                }
-            }
-//        echo "Secret is: ".$secret."\n\n";
-
-
-//            $oneCode = $ga->getCode($secret);
-//        echo "Checking Code '$oneCode' and Secret '$secret':\n";
-
-//            $checkResult = $ga->verifyCode($secret, $oneCode, 2);    // 2 = 2*30sec clock tolerance
-//            if ($checkResult) {
-//            echo 'OK';
-//            } else {
-//            echo 'FAILED';
-//            }
         } else {
             $this->redirect($this->app_root);
         }
@@ -82,6 +40,7 @@ class UsersController extends AppController
 
     public function login()
     {
+        $this->viewBuilder()->layout('login_register');
         if ($this->is_logged) {
             $this->redirect($this->Auth->redirectUrl());
         } else {
@@ -138,6 +97,7 @@ class UsersController extends AppController
 
     public function registration()
     {
+        $this->viewBuilder()->layout('login_register');
         $this->_userForm();
     }
 
@@ -149,7 +109,8 @@ class UsersController extends AppController
                 isset($data['last_name']) && !empty($data['last_name']) && !is_null($data['last_name']) &&
                 isset($data['email']) && !empty($data['email']) && !is_null($data['email']) &&
                 isset($data['password']) && !empty($data['password']) && !is_null($data['password'])) {
-                //TODO: add check user exist by email before saving
+
+                // check user exist by email before saving
                 $check_exist_user = $this->_userExistByEmail(trim($data['email']));
                 if (!is_null($token)) {
                     $entity = $this->users_table->getEntityByToken($token);

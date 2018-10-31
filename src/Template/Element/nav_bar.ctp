@@ -1,4 +1,5 @@
-<nav class="navbar navbar-transparent navbar-color-on-scroll fixed-top navbar-expand-lg" color-on-scroll="100"
+<nav class="<?= (isset($class) && !is_null($class) && !empty($class) ? $class : 'navbar navbar-transparent navbar-color-on-scroll fixed-top navbar-expand-lg') ?>"
+     color-on-scroll="100"
      id="sectionsNav">
     <div class="container">
         <div class="navbar-translate">
