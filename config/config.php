@@ -16,6 +16,12 @@ $config['app_logo_medium'] = $config['app_root'].'webroot/img/'.$config['app_log
 $config['app_logo_small'] = $config['app_root'].'webroot/img/'.$config['app_logo_name_small'];
 $config['app_logo_report'] = $config['app_root'].'webroot/img/logo_gl.jpg';
 
+/* Security */
+$config['confirmation_token_expiration'] = 60 * 60 * 24; // 24h
+$config['reset_password_token_expiration'] = 60 * 60 * 2; // 2h
+$config['reCAPTCHA_key'] = '6LdkJngUAAAAADIAtAvv7Suv-J9h_IWGm1lTaOt8';
+$config['reCAPTCHA_secret_key'] = '6LdkJngUAAAAAHugziurwfPGNO0356iOXfycdHc4';
+
 /* Locale Format */
 $config['date_format'] = 'd/m/Y';
 $config['date_format_for_db'] = 'Y-m-d';

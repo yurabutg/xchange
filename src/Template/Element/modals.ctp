@@ -1,21 +1,16 @@
-<?php /*
-
- <button class="btn btn-rose btn-raised btn-round" data-toggle="modal" data-target="#myModal"
-                            data-backdrop="static" data-keyboard="false">
-                        <?= $text_registration; ?>
-                    </button>
+<button class="btn btn-rose btn-raised btn-round" data-toggle="modal" data-target="#myModal"
+        data-backdrop="static" data-keyboard="false">
+    <?= $text_registration; ?>
+</button>
 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <i class="material-icons">clear</i>
-                </button>
             </div>
             <div class="modal-body">
-                <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live
+                <p class="text-danger">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live
                     the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large
                     language ocean. A small river named Duden flows by their place and supplies it with the necessary
                     regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth.
@@ -25,10 +20,8 @@
                 </p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-link">Nice Button</button>
-                <button type="button" class="btn btn-danger btn-link" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary btn-action btn-fill" data-dismiss="modal">Ok</button>
             </div>
         </div>
     </div>
 </div>
-  */ ?>

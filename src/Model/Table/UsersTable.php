@@ -4,6 +4,9 @@ namespace App\Model\Table;
 
 use Cake\ORM\Table;
 
+/**
+ * @method getRandomString($int)
+ */
 class UsersTable extends Table
 {
 
@@ -46,6 +49,22 @@ class UsersTable extends Table
         return $results;
     }
 
+    public function getByEmail($email = null)
+    {
+        $results = [];
+        if (!is_null($email)) {
+            $options = [
+                'contain' => $this->contain,
+                'conditions' => [$this->model . '.email' => $email]
+            ];
+            $results = $this->find('all', $options);
+            if (!empty($results)) {
+                $results = $results->first();
+            }
+        }
+        return $results;
+    }
+
     public function confirmUserByConfirmationToken($confirmation_token = null)
     {
         $result = false;
@@ -53,11 +72,14 @@ class UsersTable extends Table
             $conditions = [$this->model . '.confirmation_token' => $confirmation_token];
             $record = $this->find('all', ['conditions' => $conditions])->first();
             if (!is_null($record) && !empty($record)) {
-                $entity = $this->get($record->id);
-                $entity->status_id = 1;
-                $entity->confirmation_token = null;
-                if ($this->save($entity)) {
-                    $result = true;
+                if (isset($record['confirmation_token_expiration']) && !is_null($record['confirmation_token_expiration']) && time() <= $record['confirmation_token_expiration']) {
+                    $entity = $this->get($record->id);
+                    $entity->status_id = 1;
+                    $entity->confirmation_token = null;
+                    $entity->confirmation_token_expiration = null;
+                    if ($this->save($entity)) {
+                        $result = true;
+                    }
                 }
             }
         }
@@ -72,6 +94,23 @@ class UsersTable extends Table
             $record = $this->find('all', ['conditions' => $conditions])->first();
             if (!is_null($record) && !empty($record)) {
                 $result = true;
+            }
+        }
+        return $result;
+    }
+
+    public function setRecoveryTokenByEmail($email = null, $token = null, $time = null)
+    {
+        $result = false;
+        if (!is_null($email)) {
+            $user = $this->getByEmail($email);
+            if (!empty($user)) {
+                $entity = $this->get($user['id']);
+                $entity->reset_password_token = $token;
+                $entity->reset_password_token_expiration = time() + $time;
+                if ($this->save($entity)) {
+                    $result = true;
+                }
             }
         }
         return $result;

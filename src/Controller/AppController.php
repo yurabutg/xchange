@@ -87,6 +87,7 @@ class AppController extends Controller
 
     private function _setVariables()
     {
+        /* General */
         $this->app_root = $this->getConfig('app_root');
         $this->app_name = $this->getConfig('app_name');
         $this->app_email = $this->getConfig('app_email');
@@ -100,9 +101,6 @@ class AppController extends Controller
         $this->app_logo_name_big = $this->getConfig('app_logo_name_big');
         $this->app_logo_name_medium = $this->getConfig('app_logo_name_medium');
         $this->app_logo_name_small = $this->getConfig('app_logo_name_small');
-
-        $this->current_controller = $this->request->getParam('controller');
-        $this->current_action = $this->request->getParam('action');
 
         $this->set('app_root', $this->app_root);
         $this->set('app_name', $this->app_name);
@@ -118,8 +116,18 @@ class AppController extends Controller
         $this->set('app_logo_name_medium', $this->app_logo_name_medium);
         $this->set('app_logo_name_small', $this->app_logo_name_small);
 
+        $this->current_controller = $this->request->getParam('controller');
+        $this->current_action = $this->request->getParam('action');
         $this->set('current_controller', $this->current_controller);
         $this->set('current_action', $this->current_action);
+
+        /* Security */
+        $this->confirmation_token_expiration = $this->getConfig('confirmation_token_expiration');
+        $this->reCAPTCHA_key = $this->getConfig('reCAPTCHA_key');
+        $this->reCAPTCHA_secret_key = $this->getConfig('reCAPTCHA_secret_key');
+        $this->set('confirmation_token_expiration', $this->confirmation_token_expiration);
+        $this->set('reCAPTCHA_key', $this->reCAPTCHA_key);
+        $this->set('reCAPTCHA_secret_key', $this->reCAPTCHA_secret_key);
 
         /* date configurations */
         $this->date_format = Configure::read('date_format');
@@ -143,7 +151,6 @@ class AppController extends Controller
         $this->set('text_registration', t('Registrati'));
         $this->set('text_home', t('HOME'));
         $this->set('text_profile', t('Profilo'));
-        $this->set('text_security', t('Sicurezza'));
 
         /* days text */
         $this->text_week_mo = t('Lu');
@@ -229,25 +236,10 @@ class AppController extends Controller
         return true;
     }
 
-    public function getRandomString($length)
+    public function showAlert($class = null, $text = null)
     {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-><!?_=&%$£€;.,';
-        $token = '';
-
-        if (!is_null($length)) {
-            while (strlen($token) <= $length) {
-                $randstring = '';
-                for ($i = 0; $i < $length; $i++) {
-                    $randstring .= $characters[rand(0, strlen($characters) - 1)];
-                }
-                $randstring = substr($randstring, 0, $length);
-                $token .= sha1(md5($randstring));
-            }
-
-            if (strlen($token) > $length) {
-                $token = substr($token, 0, $length);
-            }
-        }
-        return $token;
+        $this->set('show_alert', true);
+        $this->set('class', $class);
+        $this->set('alert_text', t($text));
     }
 }

@@ -1,4 +1,4 @@
-<div id="pricing" class="pricing-section text-center">
+ <div id="pricing" class="pricing-section text-center">
     <div class="container">
         <div class="col-md-12 col-sm-12 nopadding">
             <div class="pricing-intro">
@@ -10,28 +10,24 @@
             <div class="col-sm-4"></div>
             <div class="col-sm-4">
                 <div class="table-right table-center wow fadeInUp" data-wow-delay="0.6s">
-                    <div class="icon"><i class="ion-android-contact"></i></div>
+                    <div class="icon"><i class="ion-key"></i></div>
                     <div class="pricing-details">
-                        <h2><?= $text_registration; ?></h2>
+                        <h2><?= $text_reset_password; ?></h2>
                         <form method="post" action="">
                             <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
                             <ul>
-                                <li><input type="text" class="form-control" placeholder="<?= $text_first_name; ?>"
-                                           name="first_name" autocomplete="off" required></li>
-                                <li><input type="text" class="form-control" placeholder="<?= $text_last_name; ?>"
-                                           name="last_name" autocomplete="off" required></li>
                                 <li><input type="email" class="form-control" placeholder="<?= $text_email; ?>"
-                                           name="email" autocomplete="off" required></li>
-                                <li><input type="password" class="form-control" placeholder="<?= $text_password; ?>"
-                                           name="password" autocomplete="off" required></li>
+                                           name="email"
+                                           autocomplete="off" required></li>
                             </ul>
                             <input type="submit" class="btn btn-primary btn-action btn-fill"
-                                   value="<?= $text_registration; ?>">
+                                   value="<?= $text_button_recovery; ?>">
                         </form>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+            </div>
         </div>
     </div>
 </div>

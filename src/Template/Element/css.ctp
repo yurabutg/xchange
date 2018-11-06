@@ -1,9 +1,14 @@
 <?php $css_version = '?'.$app_version; ?>
 
-<!--     Fonts and icons     -->
-<?= $this->Html->css('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons'); ?>
-<?= $this->Html->css('https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css'); ?>
+<?= $this->Html->css('bootstrap.min.css'); ?>
+<?= $this->Html->css('animate.css'); ?>
+<?= $this->Html->css('owl.carousel.css'); ?>
+<?= $this->Html->css('owl.theme.css'); ?>
+<?= $this->Html->css('ionicons.min.css'); ?>
+<?= $this->Html->css('style.css'); ?>
+<?= $this->Html->css('custom.css'); ?>
 
-<!--     CSS     -->
-<?= $this->Html->css('material-kit.css'.$css_version); ?>
-<?= $this->Html->css('custom.css'.$css_version); ?>
+<?//= $this->Html->css('custom.css'.$css_version); ?>
+
+<!--     Fonts and icons     -->
+<?= $this->Html->css('https://fonts.googleapis.com/css?family=Open%20Sans:300,400,500,600,700'); ?>

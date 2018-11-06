@@ -7,7 +7,6 @@ use Cake\Mailer\Email;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\Network\Exception\NotFoundException;
 use Cake\View\Exception\MissingTemplateException;
-use GoogleAuthenticator;
 
 /**
  * Static content controller
@@ -18,71 +17,56 @@ use GoogleAuthenticator;
  */
 class UsersController extends AppController
 {
+    public $components = ['Utility'];
+
     public function initialize()
     {
         parent::initialize();
         $this->_setTextVariables();
         $this->Auth->allow([
             'confirmation',
-            'registration'
+            'registration',
+            'recoveryEmail',
+            'resetPassword'
         ]);
     }
 
-    public function profile()
+    public function registration()
     {
-        if ($this->is_logged) {
-            $user = $this->current_user;
-            $this->set('user', $user);
-        } else {
-            $this->redirect($this->app_root);
-        }
+        $this->_userForm();
     }
 
     public function login()
     {
-        $this->viewBuilder()->layout('login_register');
+        $this->set('scr', true);
         if ($this->is_logged) {
             $this->redirect($this->Auth->redirectUrl());
         } else {
             /* login functions */
             if ($this->request->is('post')) {
-                $user = $this->Auth->identify();
-                if ($user) {
-                    if ($user['status_id'] === 1) {
-                        $this->Auth->setUser($user);
+                $data = $this->request->data;
+                if (isset($data['g-recaptcha-response'])) {
+                    $captcha = $data['g-recaptcha-response'];
+                    $ip = $this->request->clientIp();
+                    if ($this->_checkRecaptcha($captcha, $ip)) {
+                        $user = $this->Auth->identify();
+                        if ($user) {
+                            if ($user['status_id'] === 1) {
+                                $this->Auth->setUser($user);
 
-                        /* redirect after login */
-                        $this->redirect($this->Auth->redirectUrl());
-                    } else {
-                        $this->set('error_msg', t('Utente non attivo!'));
-                    }
-                } else {
-                    $this->set('error_msg', t('Username o Password errati!'));
-                }
-            } /* password recovery functions */
-            else if ($this->request->is('post') && isset($this->request->data['btn-recovery'])) {
-                if (isset($this->request->data['recovery_email']) && $this->request->data['recovery_email'] !== '') {
-                    $check_user = $this->users_table->checkByEmail($this->request->data['recovery_email']);
-                    if ($check_user !== 0) {
-                        $user_array = $this->users_table->getByEmail($this->request->data['recovery_email']);
-                        $user_entity = $this->users_table->get($user_array['id']);
-                        $user_entity->temp_pass = $this->_randomPass(8);
-                        $user_entity->password = $user_entity->temp_pass;
-                        if ($this->users_table->save($user_entity)) {
-                            $email_data = [
-                                $user_array['user_info']['email'],
-                                $user_array['user_info']['fullname'],
-                                $user_array['username'],
-                                $user_entity->temp_pass
-                            ];
-                            $this->_sendPasswordRecoveryEmail($email_data[0], $email_data[1], $email_data[2], $email_data[3]);
-                            $this->set('success_msg', t('Recupero Password effettuato con successo!<br />A breve riceverai una mail con le tue nuove credenziali.'));
+                                /* redirect after login */
+                                $this->redirect($this->Auth->redirectUrl());
+                            } else {
+                                $this->showAlert('warning', 'Utente non attivo!');
+                            }
+                        } else {
+                            $this->showAlert('danger', 'Username o Password errati!');
                         }
                     } else {
-                        $this->set('error_msg', t('<span class="recovery-error-msg">E-mail specificata non registrata!</span>'));
+                        $this->redirect('https://www.google.ru/');
                     }
                 } else {
-                    $this->set('error_msg', t('<span class="recovery-error-msg">Inserisci una mail valida!</span>'));
+                    $this->showAlert('danger', 'reCaptcha Error!');
                 }
             }
         }
@@ -95,10 +79,47 @@ class UsersController extends AppController
         $this->redirect($this->app_root);
     }
 
-    public function registration()
+    public function profile()
     {
-        $this->viewBuilder()->layout('login_register');
-        $this->_userForm();
+        if ($this->is_logged) {
+            $user = $this->current_user;
+            $this->set('user', $user);
+        } else {
+            $this->redirect($this->app_root);
+        }
+    }
+
+    public function recoveryEmail()
+    {
+        if ($this->request->is('post')) {
+            $data = $this->request->data;
+            if (isset($data['g-recaptcha-response'])) {
+                $captcha = $data['g-recaptcha-response'];
+                $ip = $this->request->clientIp();
+                if ($this->_checkRecaptcha($captcha, $ip)) {
+                    $check_exist_user = $this->_userExistByEmail(trim($data['email']));
+                    if ($check_exist_user) {
+                        if ($this->users_table->setRecoveryTokenByEmail(trim($data['email']), $this->Utility->getRandomString(50), $this->reset_password_token_expiration)) {
+                            $user = $this->users_table->getByEmail(trim($data['email']));
+                            if ($this->_sendResetPasswordEmail($user['email'], $user['first_name'], $user['reset_password_token'])) {
+                                $this->showAlert('success', 'Richiesta reset password andata abuon fine. Controla email');
+                            }
+                        }
+                    } else {
+                        $this->showAlert('danger', 'Indirizzo email non valido! Per favore, verifica di averlo scritto correttamente.');
+                    }
+                } else {
+                    $this->redirect('https://www.google.ru/');
+                }
+            } else {
+                $this->showAlert('danger', 'reCaptcha Error!');
+            }
+        }
+    }
+
+    public function resetPassword()
+    {
+
     }
 
     private function _userForm($token = null)
@@ -117,11 +138,11 @@ class UsersController extends AppController
                     // TODO: $this->users_table->getEntityByToken();
                 } else if (is_null($token) && $check_exist_user == false) {
                     $entity = $this->users_table->newEntity();
-                    $entity->token = $this->getRandomString(50);
-                    $entity->confirmation_token = $this->getRandomString(50);
+                    $entity->token = $this->Utility->getRandomString(50);
+                    $entity->confirmation_token = $this->Utility->getRandomString(50);
+                    $entity->confirmation_token_expiration = time() + $this->confirmation_token_expiration;
                 } else {
-//                    $this->redirect(['controller' => 'users', 'action' => 'login']);
-                    $this->set('show_user_exist_alert', true);
+                    $this->showAlert('warning', 'Utente con questo email è gia registrato (UsersController LINE: 127)');
                     return;
                 }
                 $entity->first_name = $data['first_name'];
@@ -165,6 +186,18 @@ class UsersController extends AppController
         $this->set('confirmation_result', $confirmation_result);
     }
 
+    private function _checkRecaptcha($captcha = null, $ip = null)
+    {
+        $result = false;
+        $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=" . $this->reCAPTCHA_secret_key . "&response=" . $captcha . "&remoteip=" . $ip);
+        $responseKeys = json_decode($response, true);
+        $this->set('alert_c', $response);
+        if ($responseKeys['success'] == true && $responseKeys['score'] > 0.5) {
+            $result = true;
+        }
+        return $result;
+    }
+
     private function _sendConfirmationEmail($to = null, $name = null, $confirmation_token = null)
     {
         $subject = t('Conferma registrazione - ' . $this->app_name);
@@ -173,6 +206,43 @@ class UsersController extends AppController
         $template = 'user_confirmation';
         $content_lines[] = 'Ciao ' . $name . ',';
         $content_lines[] = 'Per confermare email vai a <a href="' . $this->https_domain . $this->app_root . 'users/confirmation/' . $confirmation_token . '">link</a>';
+        $content_lines[] = 'Atenzione link valido <b>' . $this->confirmation_token_expiration / 3600 . ' </b> ore.';
+
+        $regards_lines[] = 'Saluti,';
+        $regards_lines[] = '<em>Lo Staff</em>';
+
+        $return = false;
+        $variables = [
+            'title_for_layout' => $subject,
+            'logo' => $this->https_domain . $this->logo,
+            'app_name' => $this->app_name,
+            'content_lines' => $content_lines,
+            'regards_lines' => $regards_lines
+        ];
+        if (!is_null($to)) {
+            $email = new Email();
+            $email->template($template, $layout)
+                ->helpers(['Html'])
+                ->emailFormat('html')
+                ->viewVars($variables)
+                ->subject($subject)
+                ->to($to)
+                ->from($from)
+                ->send();
+            $return = true;
+        }
+        return $return;
+    }
+
+    private function _sendResetPasswordEmail($to = null, $name = null, $token = null)
+    {
+        $subject = t('Reset Password - ' . $this->app_name);
+        $from = $this->app_email;
+        $layout = 'default';
+        $template = 'user_confirmation';
+        $content_lines[] = 'Ciao ' . $name . ',';
+        $content_lines[] = 'Per resetare la password vai a <a href="' . $this->https_domain . $this->app_root . 'users/reset-password/' . $token . '">link</a>';
+        $content_lines[] = 'Atenzione link valido <b>' . $this->reset_password_token_expiration / 3600 . ' </b> ore.';
 
         $regards_lines[] = 'Saluti,';
         $regards_lines[] = '<em>Lo Staff</em>';
@@ -202,17 +272,23 @@ class UsersController extends AppController
 
     private function _setTextVariables()
     {
+        /* General */
         $this->set('text_first_name', t('Nome'));
         $this->set('text_last_name', t('Cognome'));
-        $this->set('text_user_exist_alert', t('<b>Error Alert:</b> UTENTE CON QUESTO EMAIL GIA REGISTART0 (UsersController LINE: 142)'));
+
+        /* Confirmation text */
         $this->set('text_user_confirmation_success', t('text utente confirmato con sucesso (UsersController LINE: 143)'));
         $this->set('text_user_confirmation_success_title', t('text utente confirmato con sucesso (UsersController LINE: 144)'));
-        $this->set('text_user_confirmation_no_user', t('Text per utente non trovato o gia confirmato (UsersController LINE: 145)'));
+        $this->set('text_user_confirmation_no_user', t('Text per utente non trovato o gia confirmato o scaduto il link (UsersController LINE: 145)'));
         $this->set('text_user_confirmation_no_user_title', t('Text per utente non trovato o gia confirmato (UsersController LINE: 146)'));
-        $this->set('text_user_confirmation_need_confirm', t('text: Vai su email e clichi il link; Atenzione link valido 24 ore; se hai gia confirmato fai login <a href="' . $this->app_root . 'users/login"><b>QUI</b></a> (UsersController LINE: 147)'));
+        $this->set('text_user_confirmation_need_confirm', t('text: Vai su email e clichi il link; Atenzione link valido ' . $this->confirmation_token_expiration / 3600 . ' ore; se hai gia confirmato fai login <a href="' . $this->app_root . 'users/login"><b>QUI</b></a> (UsersController LINE: 147)'));
         $this->set('text_user_confirmation_need_confirm_title', t('text (UsersController LINE: 148)'));
-        $this->set('text_scan_qr', t('1) Scansiona QR codice'));
-        $this->set('text_confirm_qr', t('2) Inserisci codece di conferma'));
-        $this->set('text_2fa_code', t('Codece di conferma'));
+
+        /* Recovery password text */
+        $this->set('text_button_recovery', t('Invia richiesta'));
+        $this->set('text_password_forgotten', t('Password dimenticata?'));
+        $this->set('text_reset_password', t('Richiesta recupero password'));
+        $this->set('text_token_status_false', t('Link non è valido o scaduto! <br>Si prega di fare una nuova richiesta'));
+        $this->set('text_modal_email_error_text', t('Indirizzo email non valido! Per favore, verifica di averlo scritto correttamente.'));
     }
 }

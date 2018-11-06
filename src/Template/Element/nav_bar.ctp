@@ -1,39 +1,37 @@
-<nav class="<?= (isset($class) && !is_null($class) && !empty($class) ? $class : 'navbar navbar-transparent navbar-color-on-scroll fixed-top navbar-expand-lg') ?>"
-     color-on-scroll="100"
-     id="sectionsNav">
+<nav class="navbar navbar-default navbar-fixed-top navbar-custom">
     <div class="container">
-        <div class="navbar-translate">
-            <a class="navbar-brand" href="<?= $app_root; ?>"><?= $text_home; ?></a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" aria-expanded="false"
-                    aria-label="Toggle navigation">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="navbar-toggler-icon"></span>
-                <span class="navbar-toggler-icon"></span>
-                <span class="navbar-toggler-icon"></span>
-            </button>
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false"><span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span></button>
+            <a class="navbar-brand page-scroll" href="<?= $app_root; ?>"><img src="<?= $app_root ?>img/images/logo.png"
+                                                                              width="80" height="30" alt="iLand"/></a>
         </div>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav ml-auto">
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse navbar-right" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
                 <?php if ($is_logged) : ?>
                     <li class="nav-item">
                         <a href="<?= $app_root; ?>users/profile/<?= $current_user['token']; ?>"
-                           class="btn btn-raised btn-round"> <?= $text_profile; ?> </a>
+                        > <?= $text_profile; ?> </a>
                     </li>
                     <li class="nav-item">
                         <a href="<?= $app_root; ?>users/logout"
-                           class="btn btn-danger btn-raised btn-round"> <?= $text_logout; ?> </a>
+                        > <?= $text_logout; ?> </a>
                     </li>
                 <?php else: ?>
                     <li class="nav-item">
                         <a href="<?= $app_root; ?>users/login"
-                           class="btn btn-raised btn-round"> <?= $text_login; ?> </a>
+                        > <?= $text_login; ?> </a>
                     </li>
                     <li class="nav-item">
                         <a href="<?= $app_root; ?>users/registration"
-                           class="btn btn-primary btn-raised btn-round"> <?= $text_registration; ?> </a>
+                        > <?= $text_registration; ?> </a>
                     </li>
                 <?php endif; ?>
             </ul>
         </div>
     </div>
+    <!--    --><? //= $this->Element('alerts'); ?>
 </nav>
