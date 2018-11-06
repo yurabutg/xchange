@@ -1,2 +1,13 @@
-.navbar-custom { height: 30px; padding: 5px; margin: 0}
-.alert { margin-top: 55px; height: 45px; position:fixed; z-index:1031; width: 1170px !important;}
+.navbar-custom {
+    height: 30px;
+    padding: 5px;
+    margin: 0
+}
+
+.alert {
+    margin-top: 55px;
+    height: 45px;
+    position: fixed;
+    z-index: 1031;
+    width: 1170px !important;
+}
